@@ -6,7 +6,7 @@ enable_testing()
 
 # Find SFML libs
 set(SFML_STATIC_LIBRARIES TRUE)
-find_package(SFML 2 COMPONENTS graphics window system main)
+find_package(SFML 2.5 COMPONENTS graphics window system main)
 add_compile_definitions(SFML_STATIC)
 
 if(NOT SFML_FOUND)
