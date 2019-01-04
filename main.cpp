@@ -1,5 +1,7 @@
-#include <SFML/Graphics.hpp>
 
+#include "Blocks.hpp"
+
+#include <SFML/Graphics.hpp>
 
 #include <vector>
 
@@ -7,7 +9,7 @@ class Entities : public sf::Drawable, public sf::Transformable
 {
 public:
 
-    bool load(sf::Vector2f dim, const std::vector<sf::Vector2f> &pos, unsigned int count)
+    bool load(sf::Vector2f dim, unsigned int count)
     {
         // resize the vertex array to fit the level size
         m_size = count;
@@ -19,10 +21,18 @@ public:
 
         for (unsigned int i = 0; i < m_size; ++i)
         {
-            setPos(i, pos[i]);
+            setPos(i, sf::Vector2f(0.f, 0.f));
         }
 
         return true;
+    }
+
+    void setPos(const std::vector<sf::Vector2f> &pos)
+    {
+        for (unsigned int i = 0; i < m_size; ++i)
+        {
+            setPos(i, pos[i]);
+        }
     }
 
     void setPos(unsigned int i, sf::Vector2f pos)
@@ -70,11 +80,12 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "SFML Test");
 
-    auto ents = Entities();
-    std::vector<sf::Vector2f> pos = { sf::Vector2f(50.f, 10.f), sf::Vector2f(40.f, 50.f) };
-    ents.load(sf::Vector2f(10.f, 10.f), pos, 2);
+	/* Create a new simulator instance and setup scenario. */
+	RVO::RVOSimulator *sim = new RVO::RVOSimulator();
+	setupScenario(sim);
 
-    float i = 0.f;
+    auto ents = Entities();
+    ents.load(sf::Vector2f(8.f, 8.f), (unsigned int) sim->getNumAgents());
 
     while (window.isOpen())
     {
@@ -85,13 +96,21 @@ int main()
                 window.close();
         }
 
-        ents.setPos(0, sf::Vector2f(i * .001f, i * .001f));
-        i++;
+        if (!reachedGoal(sim)) {
+            setPreferredVelocities(sim);
+            sim->doStep();
+            for (unsigned int i = 0; i < sim->getNumAgents(); ++i) {
+                auto v = sim->getAgentPosition(i);
+                ents.setPos(i, sf::Vector2f(v.x()*2.5f + 250.f, v.y()*2.5f + 240.f));
+            }
+        }
 
         window.clear();
         window.draw(ents);
         window.display();
-    }
+	}
+
+	delete sim;
 
     return 0;
 }

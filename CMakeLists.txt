@@ -28,9 +28,9 @@ if(NOT SFML_FOUND)
 endif()
 
 if(WIN32)
-    add_executable(sfml-test WIN32 main.cpp)
+    add_executable(sfml-test WIN32 Blocks.cpp main.cpp)
 else()
-    add_executable(sfml-test main.cpp)
+    add_executable(sfml-test Blocks.cpp main.cpp)
 endif()
 
 target_link_libraries(
