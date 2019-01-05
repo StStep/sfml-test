@@ -50,14 +50,32 @@ public:
         quad[3].color = sf::Color::White;
 
         // Inner
+        sf::Color color;
+        if (i % 4 == 0 )
+        {
+            color = sf::Color::Blue;
+        }
+        else if (i % 4 == 1)
+        {
+            color = sf::Color::Red;
+        }
+        else if (i % 4 == 2)
+        {
+            color = sf::Color::Yellow;
+        }
+        else
+        {
+            color = sf::Color::Green;
+        }
+
         quad[4].position = sf::Vector2f(pos.x - m_halfDim.x + 1.f, pos.y + m_halfDim.y - 1.f);
         quad[5].position = sf::Vector2f(pos.x + m_halfDim.x - 1.f, pos.y + m_halfDim.y - 1.f);
         quad[6].position = sf::Vector2f(pos.x + m_halfDim.x - 1.f, pos.y - m_halfDim.y + 1.f);
         quad[7].position = sf::Vector2f(pos.x - m_halfDim.x + 1.f, pos.y - m_halfDim.y + 1.f);
-        quad[4].color = sf::Color::Red;
-        quad[5].color = sf::Color::Red;
-        quad[6].color = sf::Color::Red;
-        quad[7].color = sf::Color::Red;
+        quad[4].color = color;
+        quad[5].color = color;
+        quad[6].color = color;
+        quad[7].color = color;
     }
 
 private:
