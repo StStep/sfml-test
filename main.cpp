@@ -82,10 +82,20 @@ int main()
 
 	/* Create a new simulator instance and setup scenario. */
 	RVO::RVOSimulator *sim = new RVO::RVOSimulator();
-	setupScenario(sim);
+	setupScenario(sim, RVO::Vector2(500.f, 500.f));
 
     auto ents = Entities();
     ents.load(sf::Vector2f(8.f, 8.f), (unsigned int) sim->getNumAgents());
+
+    sf::VertexArray obstacles;
+    obstacles.setPrimitiveType(sf::Quads);
+    obstacles.resize(sim->getNumObstacleVertices());
+    for (size_t i = 0; i < sim->getNumObstacleVertices(); i++)
+    {
+        auto v = sim->getObstacleVertex(i);
+        obstacles[i] = sf::Vector2f(v.x(), v.y());
+        obstacles[i].color = sf::Color::Blue;
+    }
 
     while (window.isOpen())
     {
@@ -101,11 +111,12 @@ int main()
             sim->doStep();
             for (unsigned int i = 0; i < sim->getNumAgents(); ++i) {
                 auto v = sim->getAgentPosition(i);
-                ents.setPos(i, sf::Vector2f(v.x()*2.5f + 250.f, v.y()*2.5f + 240.f));
+                ents.setPos(i, sf::Vector2f(v.x(), v.y()));
             }
         }
 
         window.clear();
+        window.draw(obstacles);
         window.draw(ents);
         window.display();
 	}

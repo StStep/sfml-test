@@ -71,7 +71,7 @@ const float M_PI = 3.14159265358979323846f;
 /* Store the goals of the agents. */
 std::vector<RVO::Vector2> goals;
 
-void setupScenario(RVO::RVOSimulator *sim)
+void setupScenario(RVO::RVOSimulator *sim, RVO::Vector2 worldDim)
 {
 #if RVO_SEED_RANDOM_NUMBER_GENERATOR
 	std::srand(static_cast<unsigned int>(std::time(NULL)));
@@ -81,7 +81,7 @@ void setupScenario(RVO::RVOSimulator *sim)
 	sim->setTimeStep(0.25f);
 
 	/* Specify the default parameters for agents that are subsequently added. */
-	sim->setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f);
+	sim->setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 5.0f, 2.0f);
 
 	/*
 	 * Add agents, specifying their start position, and store their goals on the
@@ -89,17 +89,21 @@ void setupScenario(RVO::RVOSimulator *sim)
 	 */
 	for (size_t i = 0; i < 5; ++i) {
 		for (size_t j = 0; j < 5; ++j) {
-			sim->addAgent(RVO::Vector2(55.0f + i * 10.0f,  55.0f + j * 10.0f));
-			goals.push_back(RVO::Vector2(-75.0f, -75.0f));
+			// Top Left
+			sim->addAgent(RVO::Vector2(50.0f + i * 10.0f,  50.0f + j * 10.0f));
+			goals.push_back(RVO::Vector2(worldDim.x() - 75.0f, worldDim.y() - 75.0f));
 
-			sim->addAgent(RVO::Vector2(-55.0f - i * 10.0f,  55.0f + j * 10.0f));
-			goals.push_back(RVO::Vector2(75.0f, -75.0f));
+			// Top Right
+			sim->addAgent(RVO::Vector2(worldDim.x() -50.0f - i * 10.0f,  50.0f + j * 10.0f));
+			goals.push_back(RVO::Vector2(75.0f, worldDim.y() - 75.0f));
 
-			sim->addAgent(RVO::Vector2(55.0f + i * 10.0f, -55.0f - j * 10.0f));
-			goals.push_back(RVO::Vector2(-75.0f, 75.0f));
-
-			sim->addAgent(RVO::Vector2(-55.0f - i * 10.0f, -55.0f - j * 10.0f));
+			// Bottom Right
+			sim->addAgent(RVO::Vector2(worldDim.x() - 50.0f - i * 10.0f, worldDim.y() - 50.0f - j * 10.0f));
 			goals.push_back(RVO::Vector2(75.0f, 75.0f));
+
+			// Bottom Left
+			sim->addAgent(RVO::Vector2(50.0f + i * 10.0f, worldDim.y() - 50.0f - j * 10.0f));
+			goals.push_back(RVO::Vector2(worldDim.x() - 75.0f, 75.0f));
 		}
 	}
 
@@ -108,26 +112,34 @@ void setupScenario(RVO::RVOSimulator *sim)
 	 * order.
 	 */
 	std::vector<RVO::Vector2> obstacle1, obstacle2, obstacle3, obstacle4;
+	auto gaph = worldDim.y() * .25f;
+	auto gapw = worldDim.x() * .25f;
+	auto objh = worldDim.y() * .20f;
+	auto objw = worldDim.x() * .20f;
 
-	obstacle1.push_back(RVO::Vector2(-10.0f, 40.0f));
-	obstacle1.push_back(RVO::Vector2(-40.0f, 40.0f));
-	obstacle1.push_back(RVO::Vector2(-40.0f, 10.0f));
-	obstacle1.push_back(RVO::Vector2(-10.0f, 10.0f));
+	// Top Left
+	obstacle1.push_back(RVO::Vector2(gapw, gaph));
+	obstacle1.push_back(RVO::Vector2(gapw + objw, gaph));
+	obstacle1.push_back(RVO::Vector2(gapw + objw, gaph + objh));
+	obstacle1.push_back(RVO::Vector2(gapw, gaph + objh));
 
-	obstacle2.push_back(RVO::Vector2(10.0f, 40.0f));
-	obstacle2.push_back(RVO::Vector2(10.0f, 10.0f));
-	obstacle2.push_back(RVO::Vector2(40.0f, 10.0f));
-	obstacle2.push_back(RVO::Vector2(40.0f, 40.0f));
+	// Top Right
+	obstacle2.push_back(RVO::Vector2(worldDim.x() - gapw - objw, gaph));
+	obstacle2.push_back(RVO::Vector2(worldDim.x() - gapw, gaph));
+	obstacle2.push_back(RVO::Vector2(worldDim.x() - gapw, gaph + objh));
+	obstacle2.push_back(RVO::Vector2(worldDim.x() - gapw - objw, gaph + objh));
 
-	obstacle3.push_back(RVO::Vector2(10.0f, -40.0f));
-	obstacle3.push_back(RVO::Vector2(40.0f, -40.0f));
-	obstacle3.push_back(RVO::Vector2(40.0f, -10.0f));
-	obstacle3.push_back(RVO::Vector2(10.0f, -10.0f));
+	// Bottom Right
+	obstacle3.push_back(RVO::Vector2(worldDim.x() - gapw - objw, worldDim.y() - gaph - objh));
+	obstacle3.push_back(RVO::Vector2(worldDim.x() - gapw, worldDim.y() - gaph - objh));
+	obstacle3.push_back(RVO::Vector2(worldDim.x() - gapw, worldDim.y() - gaph));
+	obstacle3.push_back(RVO::Vector2(worldDim.x() - gapw - objw, worldDim.y() - gaph));
 
-	obstacle4.push_back(RVO::Vector2(-10.0f, -40.0f));
-	obstacle4.push_back(RVO::Vector2(-10.0f, -10.0f));
-	obstacle4.push_back(RVO::Vector2(-40.0f, -10.0f));
-	obstacle4.push_back(RVO::Vector2(-40.0f, -40.0f));
+	// Bottom Left
+	obstacle4.push_back(RVO::Vector2(gapw, worldDim.y() - gaph - objh));
+	obstacle4.push_back(RVO::Vector2(gapw + objw, worldDim.y() - gaph - objh));
+	obstacle4.push_back(RVO::Vector2(gapw + objw, worldDim.y() - gaph));
+	obstacle4.push_back(RVO::Vector2(gapw, worldDim.y() - gaph));
 
 	sim->addObstacle(obstacle1);
 	sim->addObstacle(obstacle2);
@@ -186,7 +198,7 @@ bool reachedGoal(RVO::RVOSimulator *sim)
 {
 	/* Check if all agents have reached their goals. */
 	for (size_t i = 0; i < sim->getNumAgents(); ++i) {
-		if (RVO::absSq(sim->getAgentPosition(i) - goals[i]) > 20.0f * 20.0f) {
+		if (RVO::absSq(sim->getAgentPosition(i) - goals[i]) > 40.0f * 40.0f) {
 			return false;
 		}
 	}
