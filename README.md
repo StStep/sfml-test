@@ -12,18 +12,11 @@ The dependencies include the following:
 Primary testing is with Windows 10 and Visual Studio Code.
 Win32 specific stuff might have leaked in.
 
-## Pathfinding
+## Using RVO2
 
-One step above mesh pathfinding.
-Such as local avoidance, Reciprocal Velocity Obstacles: <https://arongranberg.com/astar/docs/local-avoidance.php>
-
-Velocity Obstacle examples:
-
-* [Cooperative VO (2001)](https://ieeexplore.ieee.org/document/977147) - Early work for entity cooperation
-* [Reciprical VO (2008)](https://ieeexplore.ieee.org/document/4543489) - Basic reciprical
-* [Parallelize RVO (2009)](https://dl.acm.org/citation.cfm?doid=1599470.1599494) - Optimized for doing a bunch of stuff in parallel, called CleaPath
-* [Hybrid Recprical VO (2011)](http://gamma.cs.unc.edu/HRVO/) - Improving RVO to avoid osscilations
-* [Generalized VO (2009)](https://ieeexplore.ieee.org/document/5354175) - Customized VO to work with car-like objects
+All RVO2 is adjust velocities based of possible collisions to avoid them.
+It should be used by setting preferred velocities, and then seeing what happens post step.
+It's kind of like the simulation sandbox, you set obstacles, agents and guide them, and let it figure out the details.
 
 ## TODO
 
