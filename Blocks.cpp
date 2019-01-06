@@ -37,10 +37,6 @@
  * obstacles. There is no roadmap to guide the agents around the obstacles.
  */
 
-#ifndef RVO_OUTPUT_TIME_AND_POSITIONS
-#define RVO_OUTPUT_TIME_AND_POSITIONS 1
-#endif
-
 #ifndef RVO_SEED_RANDOM_NUMBER_GENERATOR
 #define RVO_SEED_RANDOM_NUMBER_GENERATOR 1
 #endif
@@ -51,10 +47,6 @@
 #include <cstdlib>
 
 #include <vector>
-
-#if RVO_OUTPUT_TIME_AND_POSITIONS
-#include <iostream>
-#endif
 
 #if RVO_SEED_RANDOM_NUMBER_GENERATOR
 #include <ctime>
@@ -149,21 +141,6 @@ void setupScenario(RVO::RVOSimulator *sim, RVO::Vector2 worldDim)
 	/* Process the obstacles so that they are accounted for in the simulation. */
 	sim->processObstacles();
 }
-
-#if RVO_OUTPUT_TIME_AND_POSITIONS
-void updateVisualization(RVO::RVOSimulator *sim)
-{
-	/* Output the current global time. */
-	std::cout << sim->getGlobalTime();
-
-	/* Output the current position of all the agents. */
-	for (size_t i = 0; i < sim->getNumAgents(); ++i) {
-		std::cout << " " << sim->getAgentPosition(i);
-	}
-
-	std::cout << std::endl;
-}
-#endif
 
 void setPreferredVelocities(RVO::RVOSimulator *sim)
 {
